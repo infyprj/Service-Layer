@@ -1,0 +1,168 @@
+using Infosys.Shop3D.DataAccessLayer;
+using Infosys.Shop3D.DataAccessLayer.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Infosys.Shop3D.Services.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductController : Controller
+    {
+        public Shop3DRepository repository;
+        public ProductController(Shop3DRepository repository)
+        {
+            this.repository = repository;
+        }
+
+        [HttpGet]
+        public JsonResult GetAllProducts()
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = repository.GetAllProducts();
+            }
+            catch (Exception ex)
+            {
+                products = null;
+            }
+            return Json(products);
+        }
+
+        [HttpGet("{id}")]
+        public JsonResult GetProductById(int id)
+        {
+            Product product = null;
+            try
+            {
+                product = repository.GetProductById(id);
+            }
+            catch (Exception ex)
+            {
+                product = null;
+            }
+            return Json(product);
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public JsonResult GetProductsByCategory(int categoryId)
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = repository.GetProductsByCategory(categoryId);
+            }
+            catch (Exception ex)
+            {
+                products = null;
+            }
+            return Json(products);
+        }
+
+        [HttpGet("price-range")]
+        public JsonResult GetProductsByPriceRange(decimal minPrice, decimal maxPrice)
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = repository.GetProductsByPriceRange(minPrice, maxPrice);
+            }
+            catch (Exception ex)
+            {
+                products = null;
+            }
+            return Json(products);
+        }
+
+        [HttpGet("count")]
+        public JsonResult GetProductsCount(int? categoryId = null, decimal? minPrice = null, decimal? maxPrice = null)
+        {
+            int count = 0;
+            try
+            {
+                count = repository.GetProductsCount(categoryId, minPrice, maxPrice);
+            }
+            catch (Exception ex)
+            {
+                count = 0;
+            }
+            return Json(count);
+        }
+
+        [HttpGet("search")]
+        public JsonResult SearchProducts(string searchTerm)
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = repository.SearchProducts(searchTerm);
+            }
+            catch (Exception ex)
+            {
+                products = null;
+            }
+            return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult AddProduct([FromBody] Product product)
+        {
+            int productId = 0;
+            try
+            {
+                productId = repository.AddProduct(product);
+            }
+            catch (Exception ex)
+            {
+                productId = 0;
+            }
+            return Json(new { ProductId = productId, Success = productId > 0 });
+        }
+
+        [HttpPut]
+        public JsonResult UpdateProduct([FromBody] Product product)
+        {
+            bool status = false;
+            try
+            {
+                status = repository.UpdateProduct(product);
+            }
+            catch (Exception ex)
+            {
+                status = false;
+            }
+            return Json(new { Success = status });
+        }
+
+        [HttpDelete("{id}")]
+        public JsonResult DeleteProduct(int id)
+        {
+            bool status = false;
+            try
+            {
+                status = repository.DeleteProduct(id);
+            }
+            catch (Exception ex)
+            {
+                status = false;
+            }
+            return Json(new { Success = status });
+        }
+
+        [HttpGet("images/{productId}")]
+        public JsonResult GetProductImages(int productId)
+        {
+            List<ProductImage> images = new List<ProductImage>();
+            try
+            {
+                images = repository.GetProductImages(productId);
+            }
+            catch (Exception ex)
+            {
+                images = null;
+            }
+            return Json(images);
+        }
+    }
+}
