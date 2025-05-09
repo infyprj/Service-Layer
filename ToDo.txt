@@ -1,0 +1,6 @@
+
+
+In service Layer appsettings.json file
+"ConnectionStrings": {
+	    "QuickKartDBConnectionString": "data source=(localdb)\\MSSQLLocalDB;initial catalog=QuickKartDB;Integrated security=True;"
+	  }
